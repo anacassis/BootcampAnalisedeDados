@@ -1,0 +1,113 @@
+Utilizei linguagem R e executei no jupyter notebook 
+
+# ==========================
+#     Mineração de Texto
+# ==========================
+
+
+#Baixar o Pacote:
+   install.packages("tm")
+
+   library("tm")
+
+#Load the data as a corpus
+   TextDoc <- Corpus(VectorSource(texto))
+
+#Cria o toSpace 
+   toSpace <- content_transformer(function(x, pattern) {return (gsub(pattern, " ", x))})
+
+#Remoção de caracteris especias 
+   TextDoc[[1]]$content
+
+TextDoc <- tm_map(TextDoc, toSpace, "@\\w+")
+   TextDoc[[1]]$content
+
+TextDoc <- tm_map(TextDoc, toSpace, "#\\w+")
+   TextDoc[[1]]$content
+
+   TextDoc <- tm_map(TextDoc, toSpace, " ?(f|ht)(tp)(s?)(://)(.*)[.|/](.*)")
+
+   TextDoc[[5]]$content
+
+   TextDoc <- tm_map(TextDoc, removePunctuation)
+   TextDoc[[5]]$content
+
+   TextDoc <- tm_map(TextDoc, toSpace, "“")
+   TextDoc <- tm_map(TextDoc, toSpace, "”")
+   TextDoc <- tm_map(TextDoc, toSpace, " –")
+   TextDoc[[5]]$content
+   TextDoc[[8]]$content
+
+#Visualização do que foi feito até o momento
+   getTransformations()
+
+#Transformar letras maiusculas em minusculas
+   TexDoc <- tm_map(TextDoc,content_transformer(tolower))
+   TextDoc[[5]]$content
+
+#       Strip digits (std transformation, so no need for content_transformer)
+   TextDoc <- tm_map(TextDoc, removeNumbers)
+   TextDoc[[2]]$content
+
+#Remoção de palavras irrelevantes usando a lista padrão em tm
+   TextDoc <- tm_map(TextDoc, removeWords, stopwords("portuguese"))
+
+#Visualização
+  TextDoc[[5]]$content
+  TextDoc[[8]]$content
+
+#Visualizar palabras do pacote TM 
+   print(stopwords("portuguese"))
+
+#Remoção de palavras irrelevantes usando a lista padrão em tm 
+   TextDoc[[5]]$content
+   TextDoc[[8]]$content
+
+#Remoção de espaços em branco
+   TextDoc <- tm_map(TextDoc, stripWhitespace)
+   TextDoc[[5]]$content
+   TextDoc[[8]]$content
+
+TextDoc <- tm_map(TextDoc, stemDocument)
+
+   TextDoc[[5]]$content
+   TextDoc[[7]]$content
+   TextDoc[[8]]$content
+
+#Criação matriz term-document
+   TextDoc_matrix <- TermDocumentMatrix(TextDoc)
+
+   TextDoc_matrix
+
+#Transformando em matrix para permitir a manipulação
+   matriz <- as.matrix(TextDoc_matrix)
+
+   head(matriz)
+
+#Organizar os dados de forma decrescente
+   matriz <- sort(rowSums(matriz), decreasing=T)
+
+   head(matriz,10)
+
+#Criando um data.frame para a matriz
+   matriz <- data.frame(word=names(matriz), freq = matriz)
+   matriz
+
+   head(matriz, n=10)
+
+   findFreqTerms(TextDoc_matrix, lowfreq = 2, highfreq = Inf)
+
+## Encontre palavras que estão correlacionadas com "dom" com um coeficiente > 0,70
+   findAssocs(TextDoc_matrix, "dom", .70)
+
+#Encontre palavras que estão correlacionadas com "dom" com um coeficiente > 0,50
+   findAssocs(TextDoc_matrix, "dom", .50)
+
+#Encontre palavras que estão correlacionadas com "palavra" com um coeficiente > 0,70
+   findAssocs(TextDoc_matrix, "palavra", .70)
+
+#Criar matriz term-document
+   extDoc_matrix <- TermDocumentMatrix(TextDoc)
+
+   Doc_TermMatriz <- DocumentTermMatrix(TextDoc) 
+   inspect(Doc_TermMatriz)
