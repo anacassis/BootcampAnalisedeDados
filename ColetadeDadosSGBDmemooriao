@@ -1,0 +1,30 @@
+Utilizei o jupyter Notebook na linguagem R
+
+### Instalação do pacote
+install.packages ("RSQLite")
+
+### Leitura
+library(RSQLite)
+library(readr)
+
+### conectando ao SGBD - (funciona apenas quando eu estiver trabalhando)
+con = dbConnect(RSQLite::SQLite(), ":memory:")
+
+setwd('C:/Users/Ana Carolina Assis/Desktop/Cursos/Bootcamp Análise De Dados/Material_complementar_videoaulas')
+
+### criando a tabela no sgbd 
+dbWriteTable(con,"contabilidade","./contabilidade.csv" )
+
+### Visualizando a tabela
+dbListTables(con)
+
+dbReadTable(con, "contabilidade")
+
+dados = dbSendQuery(con, "select * from contabilidade where cap =1")
+dbFetch(dados)
+
+dados= dbSendQuery(con, "select * from contabilidade where PC between 40000 and 50000")
+dbFetch(dados)
+
+### Desconectando do banco de dados
+dbDisconnect(con)
